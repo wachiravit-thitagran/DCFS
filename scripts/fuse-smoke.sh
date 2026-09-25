@@ -44,7 +44,12 @@ for _ in $(seq 1 60); do
     curl -sf "http://$SERVER_ADDR/health" >/dev/null && break
     sleep 1
 done
-curl -sf "http://$SERVER_ADDR/health" >/dev/null || { echo "server never became healthy" >&2; exit 1; }
+curl -sf "http://$SERVER_ADDR/health" >/dev/null || {
+    echo "server never became healthy" >&2
+    echo "--- dcfs-server log ---" >&2
+    cat "$server_log" >&2
+    exit 1
+}
 
 MODE="${MODE:-stream}"
 

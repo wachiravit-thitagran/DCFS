@@ -19,7 +19,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready --health-interval 2s
+          --health-cmd "pg_isready -U postgres -d postgres" --health-interval 2s
           --health-timeout 3s --health-retries 30
     steps:
       - uses: actions/checkout@v4
@@ -53,16 +53,22 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready --health-interval 2s
+          --health-cmd "pg_isready -U postgres -d dcfs" --health-interval 2s
           --health-timeout 3s --health-retries 30
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: sudo apt-get update && sudo apt-get install -y libfuse3-dev fuse3 pkg-config git rsync sqlite3
-      - run: psql "$DATABASE_URL" -f migrations/0001_initial.sql
+      - name: Apply all migrations
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dcfs
+        run: |
+          set -euo pipefail
+          for migration in migrations/*.sql; do
+            echo "applying $migration"
+            psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$migration"
+          done
       - run: scripts/fuse-smoke.sh
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dcfs
