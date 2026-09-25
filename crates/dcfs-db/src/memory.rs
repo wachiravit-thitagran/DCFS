@@ -228,9 +228,10 @@ impl MetadataRepository for MemoryMetadataRepository {
         if !nodes.contains_key(&id) {
             return Err(RepositoryError::NotFound);
         }
-        if nodes.values().any(|n| {
-            n.id != id && n.parent_id == Some(new_parent_id) && n.name == new_name
-        }) {
+        if nodes
+            .values()
+            .any(|n| n.id != id && n.parent_id == Some(new_parent_id) && n.name == new_name)
+        {
             return Err(RepositoryError::AlreadyExists);
         }
 

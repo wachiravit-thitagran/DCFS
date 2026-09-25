@@ -5,8 +5,8 @@
 
 use dcfs_core::NodeKind;
 use dcfs_fuse::client::{ClientError, ServerClient};
-use dcfs_fuse::service::{Fs, ROOT_INO};
 use dcfs_fuse::fake_client::FakeClient;
+use dcfs_fuse::service::{Fs, ROOT_INO};
 use dcfs_protocol::{CreateNodeRequest, NameBytes, PatchNodeRequest, RenameNodeRequest};
 use uuid::Uuid;
 

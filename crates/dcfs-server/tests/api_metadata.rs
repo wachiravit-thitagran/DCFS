@@ -208,22 +208,10 @@ async fn publish_never_replaces_an_existing_destination() {
     .await;
     assert_eq!(status, StatusCode::CONFLICT, "{body}");
 
-    let (_, kept) = send(
-        &router,
-        "GET",
-        &format!("/api/v1/nodes/{published}"),
-        None,
-    )
-    .await;
+    let (_, kept) = send(&router, "GET", &format!("/api/v1/nodes/{published}"), None).await;
     assert_eq!(kept["name"], name(b"published"));
 
-    let (_, partial) = send(
-        &router,
-        "GET",
-        &format!("/api/v1/nodes/{temporary}"),
-        None,
-    )
-    .await;
+    let (_, partial) = send(&router, "GET", &format!("/api/v1/nodes/{temporary}"), None).await;
     assert_eq!(partial["name"], name(b".uploading"));
 
     let (status, body) = send(

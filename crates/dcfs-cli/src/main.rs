@@ -383,11 +383,7 @@ async fn put(mut args: impl Iterator<Item = String>) -> ExitCode {
             {
                 Ok(resp) if resp.status().is_success() => {
                     match resp.json::<serde_json::Value>().await {
-                        Ok(node) => (
-                            node["id"].as_str().unwrap_or_default().to_string(),
-                            root,
-                            0,
-                        ),
+                        Ok(node) => (node["id"].as_str().unwrap_or_default().to_string(), root, 0),
                         Err(e) => {
                             eprintln!("dcfs: cannot read the new file: {e}");
                             return ExitCode::FAILURE;
